@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         textViewResult=findViewById(R.id.text_view_result);
 
         Retrofit retrofit =new Retrofit.Builder()                                   //retrofit build
-                .baseUrl("https://jsonplaceholder.typicode.com")
+                .baseUrl("https://jsonplaceholder.typicode.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -40,8 +42,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void getPosts()
     {
+        Map<String,String> parameters=new HashMap<>();
+        parameters.put("userId","2");
+        parameters.put("_sort","id");
+        parameters.put("_order","desc");
         Call<List<post>> call;
-        call = jsonPlaceholderApi.getPosts();                      //data extract
+        //call = jsonPlaceholderApi.getPosts(new Integer[]{2,4,6},"id","desc");   //if u don't want the parameters to work pass null  //data extract //multiple query parameter
+        call =jsonPlaceholderApi.getPosts(parameters);
 
         call.enqueue(new Callback<List<post>>() {
             @Override
@@ -75,7 +82,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void getComments()
     {
-        Call<List<Comment>> call=jsonPlaceholderApi.getComments(3);    //for example we pass 3 as id
+        //Call<List<Comment>> call=jsonPlaceholderApi.getComments(3);    //for example we pass 3 as id
+
+        Call<List<Comment>> call=jsonPlaceholderApi.getComments("posts/2/comments");
 
         call.enqueue(new Callback<List<Comment>>() {
             @Override
