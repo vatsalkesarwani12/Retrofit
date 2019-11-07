@@ -10,5 +10,7 @@ public interface JsonPlaceholderApi {
 
     @GET("/posts")
     Call<List<post>> getPosts();     // functions gets u list of posts //return a call object
-    
+
+    @GET("/posts/{id}/comments")                            //dynamic calling //dynamic content inside the parenthesis
+    Call<List<Comment>> getComments(@Path("id") int postid);  //@Path annotation specify where the data has to go
 }
