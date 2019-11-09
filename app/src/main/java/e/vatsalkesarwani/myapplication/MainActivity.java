@@ -46,7 +46,9 @@ public class MainActivity extends AppCompatActivity {
 
         //createPost();
 
-        updatePost();
+        //updatePost();
+
+        deletePost();
     }
 
     public void getPosts()
@@ -196,6 +198,23 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<post> call, Throwable t) {
+                textViewResult.setText(t.getMessage());
+            }
+        });
+    }
+
+    private void deletePost()
+    {
+        Call<Void> call=jsonPlaceholderApi.deletePost(5);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                textViewResult.setText("Code: "+response.code());
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
                 textViewResult.setText(t.getMessage());
             }
         });

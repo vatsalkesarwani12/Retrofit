@@ -5,6 +5,7 @@ import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
@@ -62,4 +63,6 @@ public interface JsonPlaceholderApi {
     @PATCH("posts/{id}")
     Call<post> patchPost(@Path("id") int id, @Body post posts);
 
+    @DELETE("posts/{id}")
+    Call<Void> deletePost(@Path("id") int id);
 }
