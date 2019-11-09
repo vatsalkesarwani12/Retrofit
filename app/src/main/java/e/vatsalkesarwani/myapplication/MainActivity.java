@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,9 +31,11 @@ public class MainActivity extends AppCompatActivity {
 
         textViewResult=findViewById(R.id.text_view_result);
 
+        Gson gson=new GsonBuilder().serializeNulls().create();     //done to customize Gson converter
+
         Retrofit retrofit =new Retrofit.Builder()                                   //retrofit build
                 .baseUrl("https://jsonplaceholder.typicode.com/")
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
         jsonPlaceholderApi=retrofit.create(JsonPlaceholderApi.class);   //client object
@@ -39,7 +44,9 @@ public class MainActivity extends AppCompatActivity {
 
         //getComments();
 
-        createPost();
+        //createPost();
+
+        updatePost();
     }
 
     public void getPosts()
@@ -156,7 +163,40 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<post> call, Throwable t) {
+                textViewResult.setText(t.getMessage());
+            }
+        });
+    }
 
+    private void updatePost()
+    {
+        post posts =new post(12,null,"new text");
+
+        Call<post> call =jsonPlaceholderApi.patchPost(5,posts);         //no changes only change put with patch to use patch post
+
+        call.enqueue(new Callback<post>() {
+            @Override
+            public void onResponse(Call<post> call, Response<post> response) {
+                if(!response.isSuccessful())
+                {
+                    textViewResult.setText("Code: "+response.code());
+                    return;
+                }
+                post postResponse=response.body();
+
+                String content = "";
+                content +="Code: " + response.code()+"\n";
+                content += "ID: " + postResponse.getId() + "\n";
+                content += "User ID: " + postResponse.getUserId() + "\n";
+                content += "Title: " + postResponse.getTitle() + "\n";
+                content += "Text: " + postResponse.getText() + "\n\n";
+
+                textViewResult.append(content);
+            }
+
+            @Override
+            public void onFailure(Call<post> call, Throwable t) {
+                textViewResult.setText(t.getMessage());
             }
         });
     }
