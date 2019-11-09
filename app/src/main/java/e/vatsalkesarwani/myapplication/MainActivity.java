@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,9 +35,17 @@ public class MainActivity extends AppCompatActivity {
 
         Gson gson=new GsonBuilder().serializeNulls().create();     //done to customize Gson converter
 
+        HttpLoggingInterceptor httpLoggingInterceptor=new HttpLoggingInterceptor();
+        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient okHttpClient= new OkHttpClient.Builder()
+                .addInterceptor(httpLoggingInterceptor)
+                .build();
+
         Retrofit retrofit =new Retrofit.Builder()                                   //retrofit build
                 .baseUrl("https://jsonplaceholder.typicode.com/")
                 .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(okHttpClient)
                 .build();
 
         jsonPlaceholderApi=retrofit.create(JsonPlaceholderApi.class);   //client object
@@ -46,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
 
         //createPost();
 
-        //updatePost();
+        updatePost();
 
-        deletePost();
+        //deletePost();
     }
 
     public void getPosts()
@@ -174,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
     {
         post posts =new post(12,null,"new text");
 
-        Call<post> call =jsonPlaceholderApi.patchPost(5,posts);         //no changes only change put with patch to use patch post
+        Call<post> call =jsonPlaceholderApi.putPost(5,posts);         //no changes only change put with patch to use patch post
 
         call.enqueue(new Callback<post>() {
             @Override
