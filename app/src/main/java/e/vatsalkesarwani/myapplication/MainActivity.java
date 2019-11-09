@@ -37,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
 
         //getPosts();
 
-        getComments();
+        //getComments();
+
+        createPost();
     }
 
     public void getPosts()
@@ -113,6 +115,48 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Comment>> call, Throwable t) {
                 textViewResult.setText(t.getMessage());
+            }
+        });
+    }
+
+    private void createPost()
+    {
+        post posts=new post(23,"new title","new text");    //1 st post we pass post in Call<post> call=jsonPlaceholderApi.createPost(posts);
+
+        Map<String,String> fields=new HashMap<>();
+        fields.put("userId","23");
+        fields.put("title","new title");
+        fields.put("body","new text");
+
+        //Call<post> call=jsonPlaceholderApi.createPost(23,"new title","new text");   //2nd method of POST
+
+        Call<post> call=jsonPlaceholderApi.createPost(fields);
+
+        call.enqueue(new Callback<post>() {
+            @Override
+            public void onResponse(Call<post> call, Response<post> response) {
+                if(!response.isSuccessful())
+                {
+                    textViewResult.setText("Code: "+response.code());
+                    return;
+                }
+                post createResponse=response.body();
+
+                    String content = "";
+                    content +="Code: " + response.code()+"\n";
+                    content += "ID: " + createResponse.getId() + "\n";
+                    content += "User ID: " + createResponse.getUserId() + "\n";
+                    content += "Title: " + createResponse.getTitle() + "\n";
+                    content += "Text: " + createResponse.getText() + "\n\n";
+
+                    textViewResult.append(content);
+
+
+            }
+
+            @Override
+            public void onFailure(Call<post> call, Throwable t) {
+
             }
         });
     }

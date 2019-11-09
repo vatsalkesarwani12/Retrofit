@@ -4,7 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
@@ -31,4 +36,21 @@ public interface JsonPlaceholderApi {
 
     @GET
     Call<List<Comment>> getComments(@Url String url);  //can pass relative url directly here
+
+    @POST("posts")
+    Call<post> createPost(@Body post posts);
+
+    //or using formUrlEncoder
+
+    @FormUrlEncoded
+    @POST("posts")
+    Call<post> createPost(
+            @Field("id") int id,
+            @Field("title") String title,
+            @Field("body") String text
+            );
+
+    @FormUrlEncoded
+    @POST("posts")
+    Call<post> createPost(@FieldMap Map<String ,String > fields);
 }
