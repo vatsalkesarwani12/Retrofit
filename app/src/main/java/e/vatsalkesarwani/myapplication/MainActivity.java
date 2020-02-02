@@ -50,13 +50,13 @@ public class MainActivity extends AppCompatActivity {
 
         jsonPlaceholderApi=retrofit.create(JsonPlaceholderApi.class);   //client object
 
-        //getPosts();
+        getPosts();
 
         //getComments();
 
         //createPost();
 
-        updatePost();
+        //updatePost();
 
         //deletePost();
     }
